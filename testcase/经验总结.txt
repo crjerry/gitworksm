@@ -19,7 +19,8 @@
 3.10.1.11.103服务器连接不上，需申请权限
 4.hbase.nodes 服务器节点连接timeout，最后查询到的是大数据组Hbase-client引入的管理包是1.2.0，和开发使用的版本2.1.0相差过大（待确认，经确认不一定由此问题导致构建不成功，是由第五条错误导致）
    解决方法是配管重新部署服务器符合我们的hbase服务
-5.2019-04-10 15:20:05.730 [main] ERROR c.s.common.cfgservice.CfgService - config file cannot be loaded from remote, retCode=0,httpCode=200,content={"retCode":-128205,"retMsg":"下载了服务端不存在的配置类型"}
+5.（all.log里面的错误信息）2019-04-10 15:20:05.730 [main] ERROR c.s.common.cfgservice.CfgService - config file cannot be loaded from remote, retCode=0,httpCode=200,content={"retCode":-128205,"retMsg":"下载了服务端不存在的配置类型"}
   解决方法是执行sql语句 UPDATE saic_cms_config.t_config set need_export =1 where id <84 and id >= 80;
   原因分析：此服务为新服务，sql表字段为新创建，need_export需设置为1（需要导出），随后他自动会变为2（已导出），之前的错误
                   是因为执行sql语句时直接设置为2（已导出）了，其实未导出。
+6.（Jenkins构建日志）Port: 6454 is timeout for 30 seconds，...result=unstable 这个错误多方面原因都可引起，上面第五条问题可引起；构建时在root用户下面，kill掉之后，想在saicapp用户下面构建也会出现这种问题，必须授权到saicapp构建后才行，不然构建不成功。
